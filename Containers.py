@@ -26,14 +26,14 @@ def tanker(env, gas_station):
 
 
 def car(name, env, gas_station):
-    print(f'Car {name} arriving at {env.now}')
+    print(f'Proceso {name} arriving at {env.now}')
     with gas_station.fuel_dispensers.request() as req:
         yield req
         print("Cantidad de gas que tiene: %s" %(gas_station.gas_tank.level))
-        print(f'Car {name} starts refueling at {env.now}')
+        print(f'Proceso {name} starts refueling at {env.now}')
         yield gas_station.gas_tank.get(40)
         yield env.timeout(5)
-        print(f'Car {name} done refueling at {env.now}')
+        print(f'Proceso {name} done refueling at {env.now}')
         print("Cantidad de gas que queda: %s" %(gas_station.gas_tank.level))
 
 
