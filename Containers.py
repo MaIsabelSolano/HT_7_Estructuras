@@ -26,23 +26,34 @@ def tanker(env, gas_station):
 
 
 def car(name, env, gas_station):
+    global totalTime
+    arrivingTime = env.now
     print(f'Proceso {name} arriving at {env.now}')
     with gas_station.fuel_dispensers.request() as req:
         yield req
         print("Cantidad de gas que tiene: %s" %(gas_station.gas_tank.level))
-        print(f'Proceso {name} starts refueling at {env.now}')
+        print(f'gas_station {name} starts refueling at {env.now}')
         yield gas_station.gas_tank.get(40)
         yield env.timeout(5)
-        print(f'Proceso {name} done refueling at {env.now}')
+        print(f'gas_station {name} done refueling at {env.now}')
         print("Cantidad de gas que queda: %s" %(gas_station.gas_tank.level))
+    leavingTime = env.now-arrivingTime
+    totalTime = totalTime + leavingTime
+    print("Tiempo total transcurido: %s" %totalTime)
 
 
 def car_generator(env, gas_station):
-    for i in range(4):
+    
+    for i in range(25):
         env.process(car(i, env, gas_station))
         yield env.timeout(5)
 
 env = simpy.Environment()
 gas_station = GasStation(env)
 car_gen = env.process(car_generator(env, gas_station))
-env.run(35)
+totalTime=0
+env.run(10000)
+#promedio de atencion por carro. 
+print("Tiempo total: %s" %totalTime)
+promedio = totalTime/25
+print("Su promedio es de: %s" %promedio)
