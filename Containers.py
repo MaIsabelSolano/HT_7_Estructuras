@@ -7,7 +7,7 @@ import random
 class GasStation:
     def __init__(self, env):
         self.fuel_dispensers = simpy.Resource(env, capacity=2)
-        self.gas_tank = simpy.Container(env, init=100, capacity=1000)
+        self.gas_tank = simpy.Container(env, init=100, capacity=100)
         self.mon_proc = env.process(self.monitor_tank(env))
 
     def monitor_tank(self, env):
@@ -40,12 +40,14 @@ def car(name, env, gas_station):
     leavingTime = env.now-arrivingTime
     totalTime = totalTime + leavingTime
     print("Tiempo total transcurido: %s" %totalTime)
-
+#es el que decide cuantas veces lo realizara
+cantidad =25
 
 def car_generator(env, gas_station):
     
-    for i in range(25):
+    for i in range(cantidad):
         env.process(car(i, env, gas_station))
+        
         yield env.timeout(5)
 
 env = simpy.Environment()
@@ -55,5 +57,10 @@ totalTime=0
 env.run(10000)
 #promedio de atencion por carro. 
 print("Tiempo total: %s" %totalTime)
-promedio = totalTime/25
+promedio = totalTime/cantidad
 print("Su promedio es de: %s" %promedio)
+
+
+
+
+
