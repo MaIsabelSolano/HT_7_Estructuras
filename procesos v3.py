@@ -3,14 +3,13 @@ import simpy
 import random
 
 #configuración
-random.seed(10)
+random.seed(15)
 Cantidad_RAM = 100
 Memoria_Para_Proceso = random.randint(1,10)
 limites_proceso = [1,10]
 Tiempo_Memoria = random.expovariate(1.0/10)
 Tiempo_entre_procesos = [1,10]
 Capacidad_CPU = 3
-tiempo = 1000
 
 def proceso(nombre, env, espacio_CPU, capacidad_proceso, tiempo_proceso):
     
@@ -34,7 +33,7 @@ def proceso(nombre, env, espacio_CPU, capacidad_proceso, tiempo_proceso):
         
 def Generador_procesos(env, espacio_CPU, capacidad_proceso, tiempo_proceso):
     #se encarga de generar los procesos que se requieren hacer
-    for i in itertools.count():
+    for i in range(25): #cantidad de procesos
         yield env.timeout(random.randint(*Tiempo_entre_procesos))
         env.process(proceso('Proceso %d' % i, env, espacio_CPU, capacidad_proceso, tiempo_proceso))
 
@@ -47,4 +46,4 @@ capacidad_proceso = simpy.Container(env, Cantidad_RAM, init = Cantidad_RAM)
 env.process(Generador_procesos(env, espacio_CPU, capacidad_proceso, Tiempo_Memoria))
 
 #correr
-env.run(until=tiempo)
+env.run()
