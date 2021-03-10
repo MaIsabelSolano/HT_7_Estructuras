@@ -1,3 +1,6 @@
+#Algoritmos y Estructuras de Datos
+#Yong Bum Park 20117
+#Maria Isabel solano 20504
 import simpy
 import random
 
