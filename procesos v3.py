@@ -17,7 +17,7 @@ Capacidad_CPU = 3
 Cant_Procesos = 25
 
 def proceso(nombre, env, espacio_CPU, capacidad_proceso, tiempo_proceso):
-    
+    global totalTime
     lim_proceso = random.randint(*limites_proceso)
     print ('%s admitido al sitema operativo a las %.1f' % (nombre, env.now))
     with espacio_CPU.request() as req:
@@ -36,7 +36,7 @@ def proceso(nombre, env, espacio_CPU, capacidad_proceso, tiempo_proceso):
         
 def CPU_control (env, capacidad_proceso):
     while True:
-        if capacidad_proceso.level / capacidad_proceso.capacity * 100 < 10:
+        if capacidad_proceso.level < 100:
             print ('Desocupando espacio a las %d' % env.now)
             yield env.process(Recuparar_memoria(env,capacidad_proceso))
         yield env.timeout(10)
@@ -60,14 +60,14 @@ print ('Procesos')
 
 #iniciar procesos y crear el ambiente
 env = simpy.Environment()
-espacio_CPU = simpy.Resource(env, Capacidad_CPU)
-capacidad_proceso = simpy.Container(env, Cantidad_RAM, init = Cantidad_RAM)
+espacio_CPU = simpy.Resource(env, capacity=Capacidad_CPU)
+capacidad_proceso = simpy.Container(env, init=Cantidad_RAM, capacity = Cantidad_RAM)
 env.process(CPU_control(env, capacidad_proceso))
 env.process(Generador_procesos(env, espacio_CPU, capacidad_proceso, Tiempo_Memoria))
 totalTime=0
 
 #correr
-env.run()
+env.run(10000)
 
 #promedio de atencion por procesoro. 
 print("Tiempo total: %s" %totalTime)
