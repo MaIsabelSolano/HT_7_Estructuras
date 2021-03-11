@@ -33,6 +33,7 @@ def proceso(nombre, env, espacio_CPU, capacidad_proceso, tiempo_proceso):
         tiempo_tardado_por_proceso = env.now - inicio
         print('%s termina de correr en %.1f segundo.' % (nombre, tiempo_tardado_por_proceso))
         totalTime =+ tiempo_tardado_por_proceso
+        time.append (env.now - inicio)
         
 def CPU_control (env, capacidad_proceso):
     while True:
@@ -65,6 +66,7 @@ capacidad_proceso = simpy.Container(env, init=Cantidad_RAM, capacity = Cantidad_
 env.process(CPU_control(env, capacidad_proceso))
 env.process(Generador_procesos(env, espacio_CPU, capacidad_proceso, Tiempo_Memoria))
 totalTime=0
+time=[]
 
 #correr
 env.run(10000)
@@ -73,3 +75,12 @@ env.run(10000)
 print("Tiempo total: %s" %totalTime)
 promedio = totalTime/Cant_Procesos
 print("Su promedio es de: %s" %promedio)
+
+
+suma = 0
+for i in time:
+    suma += (i - promedio)**2
+ 
+desviacion = (suma/(Cant_Procesos-1))**0.5
+# Imprime el resultado
+print ("La desviacion estandar de los tiempos es: ",desviacion," segundos")
